@@ -1,3 +1,6 @@
+Warning! This is the Boston Beta branch. Please don't commit to it
+without explicit permission from Jon Ludlam.
+
 Xen API Libs is a set of libraries and utilities in
 [OCaml](http://caml.inria.fr/ocaml/) 3.12 that are used by
 [xapi](https://github.com/xen-org/xen-api). The libraries are a
