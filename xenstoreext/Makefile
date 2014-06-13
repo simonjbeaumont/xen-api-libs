@@ -12,11 +12,16 @@ XENSTOREEXT_OBJS = \
 INTF = $(foreach obj, $(XENSTOREEXT_OBJS),$(obj).cmi)
 LIBS = xenstoreext.cma xenstoreext.cmxa
 
-PROGRAMS =
+PROGRAMS = watch_test
 
-all: $(INTF) $(LIBS)
+all: $(INTF) $(LIBS) $(PROGRAMS)
+
+bins: $(PROGRAMS)
 
 libs: $(LIBS)
+
+watch_test: xenstoreext.cmxa watch_test.cmx
+	$(OCAMLOPT) $(OCAMLOPTFLAGS) -package xenctrl,xenstore -I ../ -I ../stdext stdext.cmxa -I ../log debug.cmx xenstoreext.cmxa watch_test.cmx -o $@
 
 xenstoreext.cmxa: $(foreach obj,$(XENSTOREEXT_OBJS),$(obj).cmx)
 	$(OCAMLOPT) $(OCAMLOPTFLAGS) -a -o $@ $(foreach obj,$(XENSTOREEXT_OBJS),$(obj).cmx)
@@ -24,13 +29,13 @@ xenstoreext.cmxa: $(foreach obj,$(XENSTOREEXT_OBJS),$(obj).cmx)
 xenstoreext.cma: $(foreach obj,$(XENSTOREEXT_OBJS),$(obj).cmo)
 	$(OCAMLC) -a -o $@ $(foreach obj,$(XENSTOREEXT_OBJS),$(obj).cmo)
 
-%.cmo: %.ml %.cmi
+%.cmo: %.ml
 	$(OCAMLC) -package xenctrl,xenstore -c -I ../log -I ../stdext -o $@ $<
 
 %.cmi: %.mli
 	$(OCAMLC) -package xenctrl,xenstore -c -I ../log -I ../stdext -o $@ $<
 
-%.cmx: %.ml %.cmi
+%.cmx: %.ml
 	$(OCAMLOPT) $(OCAMLOPTFLAGS) -package xenctrl,xenstore -c -I ../log -I ../stdext -o $@ $<
 
 %.o: %.c
